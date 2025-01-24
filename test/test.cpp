@@ -215,12 +215,13 @@ namespace all_tests
         TEST_METHOD(test_12)
         {
             std::vector<int> atp_points{ 8445, 7480, 6220, 5300, 5285 };
-            auto smallest_difference = std::numeric_limits<int>::max();
-            for (size_t i = 1; i < atp_points.size(); ++i) {
-                smallest_difference = std::min(smallest_difference, std::abs(atp_points[i] - atp_points[i - 1]));
-            }
-
-            Assert::AreEqual(15, smallest_difference);
+            std::vector<int> differences(atp_points.size());
+            std::adjacent_difference(atp_points.begin(), atp_points.end(), differences.begin());
+            differences.erase(differences.begin());
+            auto smallest_difference = *std::min_element(differences.begin(), differences.end(), [](int a, int b) {
+                return std::abs(a) < std::abs(b);
+                });
+            Assert::AreEqual(15, std::abs(smallest_difference));
         }
     };
 }
